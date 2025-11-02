@@ -155,7 +155,7 @@ class ScopesDomain extends Domain {
       emitScopes();
     } on InconsistentAnalysisException catch (_) {
       logger.write('Skipping inconsistent analysis for $rootPath');
-    } on Exception catch (e) {
+    } catch (e) {
       logger.write('Error analyzing $rootPath: $e');
     } finally {
       _analysisStatus[context] = false;
