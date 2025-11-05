@@ -42,6 +42,7 @@ abstract class DevCommand extends BaseCommand with ProxyHelper, FlutterHelper {
       negatable: true,
       defaultsTo: true,
     );
+    argParser.addFlag('low-resources-mode', help: 'Optimize build process for low resource usage.', negatable: false);
     addDartDefineArgs();
   }
 
@@ -54,6 +55,7 @@ abstract class DevCommand extends BaseCommand with ProxyHelper, FlutterHelper {
   late final port = argResults!['port'] as String;
   late final useWasm = argResults!['experimental-wasm'] as bool;
   late final managedBuildOptions = argResults!['managed-build-options'] as bool;
+  late final lowResourcesMode = argResults!['low-resources-mode'] as bool;
 
   bool get launchInChrome;
   bool get autoRun;
@@ -292,6 +294,7 @@ abstract class DevCommand extends BaseCommand with ProxyHelper, FlutterHelper {
 
     final buildArgs = [
       if (release) '--release',
+      if (lowResourcesMode) '--low-resources-mode',
       if (managedBuildOptions) ...[
         '--define',
         '$package:ddc=generate-full-dill=true',
@@ -389,7 +392,7 @@ String serverEntrypoint(String import) =>
     '''
   import '$import' as m;
   import 'package:hotreloader/hotreloader.dart';
-      
+
   void main() async {
     try {
       await HotReloader.create(
@@ -404,7 +407,7 @@ String serverEntrypoint(String import) =>
         rethrow;
       }
     }
-    
+
     m.main();
   }
 ''';
